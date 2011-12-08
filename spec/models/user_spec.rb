@@ -167,6 +167,30 @@ describe User do
       @user.should be_admin
     end
   end
+  
+  describe "micrpost associations" do
+    
+    before(:each) do
+      @user = User.create(@attr)
+      @mp1 = Factory(:micrpost, :user => @user, :created_at => 1.day.ago)
+      @mp2 = Factory(:micrpost, :user => @user, :created_at => 1.hour.ago)
+    end
+    
+    it "should have a micrpost attribute" do
+      @user.should respond_to(:micrposts)
+    end
+    
+    it "should have the right microposts in teh right order" do
+      @user.micrposts.should == [@mp2, @mp1]
+    end
+    
+    it "should destroy associated micrposts" do
+      @user.destroy
+      [@mp1, @mp2].each do |micrpost|
+        Micrpost.find_by_id(micrpost.id).should be_nil
+      end
+    end
+  end
 end
 
 
