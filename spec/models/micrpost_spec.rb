@@ -24,6 +24,20 @@ describe Micrpost do
      @micrpost.user.should == @user
    end
  end
+ 
+ describe "validations" do
+   it "should have a user id" do
+     Micrpost.new(@attr).should_not be_valid
+   end
+   
+   it "should require nonblank content" do
+     @user.micrposts.build(:content => " ").should_not be_valid
+   end
+   
+   it "should reject long content" do
+     @user.micrposts.build(:content => "a" * 141).should_not be_valid
+   end
+ end
 end
 
 # == Schema Information
