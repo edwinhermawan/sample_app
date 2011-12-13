@@ -21,7 +21,12 @@ class User < ActiveRecord::Base
     encrypted_password == encrypt(submitted_password)
   end
   
+  def feed
+    Micrpost.where("user_id = ?", id)
+  end
+  
   class << self
+    
     def authenticate(email, submitted_password)
       user = find_by_email(email)
       return nil  if user.nil?
@@ -33,8 +38,6 @@ class User < ActiveRecord::Base
       (user && user.salt == cookie_salt) ? user : nil
     end
   end
-  
-  
   
   private
   
@@ -54,7 +57,7 @@ class User < ActiveRecord::Base
     def secure_hash(string)
       Digest::SHA2.hexdigest(string)
     end
-  
+    
 end
 
 

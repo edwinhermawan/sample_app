@@ -191,6 +191,30 @@ describe User do
       end
     end
   end
+  
+  describe "status feed" do
+    before(:each) do
+      @user = User.create(@attr)
+      @mp1 = Factory(:micrpost, :user => @user, :created_at => 1.day.ago)
+      @mp2 = Factory(:micrpost, :user => @user, :created_at => 1.hour.ago)
+    end
+    
+    it "should have a feed" do
+      @user.should respond_to(:feed)
+    end
+    
+    it "should include the user's micrpost" do
+      @user.feed.should include(@mp1)
+      @user.feed.should include(@mp2)
+    end
+    
+    it "should not include include a different users micrposts" do
+      mp3 = Factory(:micrpost, :user => Factory(:user, :email => Factory.next(:email)))
+      @user.feed.should_not include(mp3)
+    end
+    
+    
+  end
 end
 
 

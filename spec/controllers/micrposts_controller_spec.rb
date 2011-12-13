@@ -60,4 +60,34 @@ describe MicrpostsController do
       end
     end
   end
+  
+  describe "Delete 'destroy'" do
+    describe "for an unauthorized user" do
+      before(:each) do
+        @user = Factory(:user)
+        wrong_user = Factory(:user, :email => Factory.next(:email))
+        @micrpost = Factory(:micrpost, :user => @user)
+        test_sign_in(wrong_user)
+      end
+      
+      it "should deny access" do
+        delete :destroy, :id => @micrpost
+        response.should redirect_to(root_path)
+      end
+    end
+    describe "for an authroized user" do
+      before(:each) do
+        @user = test_sign_in(Factory(:user))
+        @micrpost = Factory(:micrpost, :user => @user)
+      end
+      
+      it "shoudl destroy the micrpost" do
+        lambda do
+          delete :destroy, :id => @micrpost
+          response.should redirect_to(root_path)
+        end.should change(Micrpost, :count).by(-1)
+      end
+      
+    end
+  end
 end

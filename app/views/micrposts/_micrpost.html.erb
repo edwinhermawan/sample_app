@@ -4,6 +4,13 @@
 		<span class ="timestamp">
 			Posted <%= time_ago_in_words(micrpost.created_at) %> ago. 
 		</span>
-		
 	</td>
+	<%= user = micrpost.user rescue User.find(micrpost.user_id)%>
+	<% if current_user?(user) %>
+	<td>
+		<%= link_to "delete", micrpost, :method => :delete,
+		                                 :confirm => "you sure?",
+										 :title => micrpost.content %>
+	</td>
+	<% end %>
 </tr>
