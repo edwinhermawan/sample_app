@@ -120,7 +120,6 @@ describe UsersController do
       get :show, :id => @user
       response.should have_selector('td.sidebar', :content => @user.micrposts.count.to_s)
     end
-    
   end
 
   describe "GET 'new'" do
