@@ -1,8 +1,13 @@
 SampleApp::Application.routes.draw do
   
   resources :sessions, :only => [:new, :create, :destroy]
-  resources :users
+  resources :users do
+    member do
+      get :following, :followers
+    end
+  end
   resources :micrposts, :only => [:create, :destroy]
+  resources :relationships, :only => [:create, :destroy]
 
   match '/contact', :to => 'pages#contact'
   match '/about', :to => 'pages#about'
