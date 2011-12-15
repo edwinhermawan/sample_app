@@ -38,6 +38,38 @@ describe Micrpost do
      @user.micrposts.build(:content => "a" * 141).should_not be_valid
    end
  end
+ 
+ describe "from_users_followed_by" do
+   before(:each) do
+     @other_user = Factory(:user, :email => Factory.next(:email))
+     @third_user = Factory(:user, :email => Factory.next(:email))
+     
+     @user_post = @user.micrposts.create!(:content => "foo")
+     @other_post = @other_user.micrposts.create!(:content => "bar")
+     @third_post = @third_user.micrposts.create!(:content => "baz")
+     
+     @user.follow!(@other_user)
+   end
+   
+   it "should hvae a from_users_followed_by method" do
+     Micrpost.should respond_to(:from_users_followed_by)
+   end
+   
+   it "should include teh followed user's micrposts" do
+     Micrpost.from_users_followed_by(@user).
+      should include(@other_post)
+   end
+   
+   it "should include teh users's own micrposts" do
+     Micrpost.from_users_followed_by(@user).
+      should include(@user_post)
+   end
+   
+   it "should not include an unfollowed users's micrposts" do
+     Micrpost.from_users_followed_by(@user).
+      should_not include(@third_post)
+   end
+ end
 end
 
 # == Schema Information

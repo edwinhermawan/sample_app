@@ -212,6 +212,13 @@ describe User do
       mp3 = Factory(:micrpost, :user => Factory(:user, :email => Factory.next(:email)))
       @user.feed.should_not include(mp3)
     end
+    
+    it "should include teh micrposts of followed users" do
+      followed = Factory(:user, :email => Factory.next(:email))
+      mp3 = Factory(:micrpost, :user => followed)
+      @user.follow!(followed)
+      @user.feed.should include(mp3)
+    end
   end
   describe "relationships" do
     before(:each) do
